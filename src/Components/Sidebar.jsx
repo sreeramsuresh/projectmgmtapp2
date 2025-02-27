@@ -1,14 +1,8 @@
 // components/Sidebar.jsx
 import React from "react";
-import {
-  Box,
-  Checkbox,
-  Drawer,
-  FormControlLabel,
-  Toolbar,
-  Typography,
-} from "@mui/material";
+import { Box, Drawer, Toolbar, Typography } from "@mui/material";
 import BoardList from "./BoardList";
+import SidebarFilters from "./SidebarFilters";
 
 const drawerWidth = 240;
 

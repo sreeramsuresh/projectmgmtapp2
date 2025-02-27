@@ -1,4 +1,12 @@
 // components/TaskCardDetails.jsx
+import React from "react";
+import { Box, Chip, Stack, Typography } from "@mui/material";
+import {
+  CalendarMonth as CalendarIcon,
+  Person as PersonIcon,
+} from "@mui/icons-material";
+import { PriorityChip } from "./TaskCard"; // Import from TaskCard
+
 const TaskCardDetails = ({ task }) => {
   return (
     <>
@@ -56,3 +64,5 @@ const TaskCardDetails = ({ task }) => {
     </>
   );
 };
+
+export default TaskCardDetails;

@@ -1,10 +1,7 @@
 // components/BoardContent.jsx
 import React from "react";
-import { Box, Button, Toolbar, Typography } from "@mui/material";
-import {
-  Add as AddIcon,
-  FilterAlt as FilterAltIcon,
-} from "@mui/icons-material";
+import { Box, Toolbar } from "@mui/material";
+import BoardHeader from "./BoardHeader";
 import BoardColumns from "./BoardColumns";
 
 const BoardContent = ({

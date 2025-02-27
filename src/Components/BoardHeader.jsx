@@ -1,7 +1,10 @@
 // components/BoardHeader.jsx
 import React from "react";
 import { Box, Button, Typography } from "@mui/material";
-import { Add as AddIcon, FilterAlt as FilterAltIcon } from "@mui/icons-react";
+import {
+  Add as AddIcon,
+  FilterAlt as FilterAltIcon,
+} from "@mui/icons-material";
 
 const BoardHeader = ({ boardName, onAddTask }) => {
   return (

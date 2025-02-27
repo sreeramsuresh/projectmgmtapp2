@@ -1,4 +1,7 @@
 // components/TaskMoveOptions.jsx
+import React from "react";
+import { Box, Button, Divider, Typography } from "@mui/material";
+
 const TaskMoveOptions = ({ availableColumns, taskId, onMoveTask }) => {
   return (
     <>
@@ -30,4 +33,4 @@ const TaskMoveOptions = ({ availableColumns, taskId, onMoveTask }) => {
   );
 };
 
-export default TaskCard;
+export default TaskMoveOptions;

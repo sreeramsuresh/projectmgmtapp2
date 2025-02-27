@@ -2,21 +2,16 @@
 import React from "react";
 import {
   Box,
-  Button,
   Card,
   CardContent,
   Chip,
-  Divider,
   IconButton,
-  Stack,
   Typography,
 } from "@mui/material";
-import {
-  MoreHoriz as MoreHorizIcon,
-  CalendarMonth as CalendarIcon,
-  Person as PersonIcon,
-} from "@mui/icons-material";
+import { MoreHoriz as MoreHorizIcon } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import TaskCardDetails from "./TaskCardDetails";
+import TaskMoveOptions from "./TaskMoveOptions";
 
 const StyledCard = styled(Card)(({ theme }) => ({
   marginBottom: theme.spacing(1.5),
@@ -25,7 +20,7 @@ const StyledCard = styled(Card)(({ theme }) => ({
   },
 }));
 
-const PriorityChip = styled(Chip)(({ theme, priority }) => {
+export const PriorityChip = styled(Chip)(({ theme, priority }) => {
   const getColor = () => {
     switch (priority) {
       case "High":

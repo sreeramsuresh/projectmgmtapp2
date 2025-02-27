@@ -5,11 +5,11 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import Layout from "./Router/Layout";
 import DashboardPage from "./Pages/DashboardPage";
-// import ProjectsPage from "./Pages/ProjectsPage";
+import ProjectsPage from "./Pages/ProjectsPage";
 import ProjectDetailPage from "./Pages/ProjectDetailPage";
-// import TeamPage from "./Pages/TeamPage";
-// import SettingsPage from "./Pages/SettingsPage";
-// import NotFoundPage from "./Pages/NotFoundPage";
+import TeamPage from "./Pages/TeamPage";
+import SettingsPage from "./Pages/SettingsPage";
+import NotFoundPage from "./Pages/NotFoundPage";
 
 // Create a custom theme
 const theme = createTheme({
@@ -70,19 +70,19 @@ const App = () => {
 
             {/* Projects routes */}
             <Route path="projects">
-              {/* <Route index element={<ProjectsPage />} /> */}
+              <Route index element={<ProjectsPage />} />
               <Route path=":projectId" element={<ProjectDetailPage />} />
             </Route>
 
             {/* Team page */}
-            {/* <Route path="team" element={<TeamPage />} /> */}
+            <Route path="team" element={<TeamPage />} />
 
             {/* Settings page */}
-            {/* <Route path="settings" element={<SettingsPage />} /> */}
+            <Route path="settings" element={<SettingsPage />} />
           </Route>
 
           {/* 404 not found route */}
-          {/* <Route path="*" element={<NotFoundPage />} /> */}
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
