@@ -1,3 +1,4 @@
+// src/Router/Layout.jsx - Updated with Kanban navigation
 import React, { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
@@ -20,7 +21,8 @@ import {
 } from "@mui/material";
 import {
   Dashboard as DashboardIcon,
-  ViewKanban as ProjectsIcon,
+  ViewKanban as KanbanIcon,
+  Assignment as ProjectsIcon,
   People as TeamIcon,
   Settings as SettingsIcon,
   Notifications as NotificationsIcon,
@@ -84,6 +86,7 @@ const StyledDrawer = styled(Drawer, {
 const navItems = [
   { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
   { text: "Projects", icon: <ProjectsIcon />, path: "/projects" },
+  { text: "Kanban Board", icon: <KanbanIcon />, path: "/kanban" },
   { text: "Team", icon: <TeamIcon />, path: "/team" },
   { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
 ];

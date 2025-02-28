@@ -10,6 +10,7 @@ import ProjectDetailPage from "./Pages/ProjectDetailPage";
 import TeamPage from "./Pages/TeamPage";
 import SettingsPage from "./Pages/SettingsPage";
 import NotFoundPage from "./Pages/NotFoundPage";
+import KanbanPage from "./Pages/KanbanPage";
 
 // Create a custom theme
 const theme = createTheme({
@@ -73,6 +74,9 @@ const App = () => {
               <Route index element={<ProjectsPage />} />
               <Route path=":projectId" element={<ProjectDetailPage />} />
             </Route>
+
+            {/* Kanban board */}
+            <Route path="kanban" element={<KanbanPage />} />
 
             {/* Team page */}
             <Route path="team" element={<TeamPage />} />
