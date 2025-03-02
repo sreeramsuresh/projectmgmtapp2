@@ -7,10 +7,9 @@ import Layout from "./Router/Layout";
 import DashboardPage from "./Pages/DashboardPage";
 import ProjectsPage from "./Pages/ProjectsPage";
 import ProjectDetailPage from "./Pages/ProjectDetailPage";
+import SimpleKanbanBoard from "./Components/SimpleKanbanBoard";
 import TeamPage from "./Pages/TeamPage";
 import SettingsPage from "./Pages/SettingsPage";
-import NotFoundPage from "./Pages/NotFoundPage";
-import KanbanPage from "./Pages/KanbanPage";
 
 // Create a custom theme
 const theme = createTheme({
@@ -75,8 +74,11 @@ const App = () => {
               <Route path=":projectId" element={<ProjectDetailPage />} />
             </Route>
 
-            {/* Kanban board */}
-            <Route path="kanban" element={<KanbanPage />} />
+            {/* Kanban Board routes */}
+            <Route path="kanban">
+              <Route index element={<SimpleKanbanBoard />} />
+              <Route path=":projectId" element={<SimpleKanbanBoard />} />
+            </Route>
 
             {/* Team page */}
             <Route path="team" element={<TeamPage />} />
@@ -84,9 +86,6 @@ const App = () => {
             {/* Settings page */}
             <Route path="settings" element={<SettingsPage />} />
           </Route>
-
-          {/* 404 not found route */}
-          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

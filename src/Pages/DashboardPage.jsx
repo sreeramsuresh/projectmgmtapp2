@@ -1,22 +1,17 @@
-// src/Pages/DashboardPage.jsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Avatar,
   AvatarGroup,
   Box,
-  Button,
   Card,
   CardContent,
   Chip,
   Divider,
-  Grid,
-  IconButton,
   LinearProgress,
   List,
   ListItem,
   ListItemAvatar,
-  ListItemButton,
-  ListItemSecondaryAction,
   ListItemText,
   Paper,
   Stack,
@@ -28,19 +23,13 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import Grid from "@mui/material/Grid";
 import {
-  AddTask as AddTaskIcon,
-  ArrowForward as ArrowForwardIcon,
-  AssignmentTurnedIn as CompletedIcon,
-  CheckCircleOutline as CheckIcon,
-  LocalFireDepartment as BurndownIcon,
-  MoreVert as MoreIcon,
-  Pending as PendingIcon,
-  PieChart as PieChartIcon,
-  Speed as VelocityIcon,
-  Timeline as TimelineIcon,
+  Assignment as TaskIcon,
+  CheckCircle as CompletedIcon,
+  Schedule as DeadlineIcon,
+  Group as TeamIcon,
 } from "@mui/icons-material";
-import { Link } from "react-router-dom";
 
 // Dummy data
 const projectSummary = [
@@ -187,108 +176,148 @@ const StatsCard = ({ title, value, icon, color }) => {
 };
 
 const DashboardPage = () => {
+  const navigate = useNavigate();
   return (
     <Box>
+      <Typography variant="h4" component="h1" gutterBottom>
+        Dashboard
+      </Typography>
       <Grid container spacing={3}>
-        {/* Header */}
-        <Grid
-          item
-          xs={12}
-          sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 2,
-          }}
-        >
-          <Typography variant="h4" component="h1">
-            Dashboard
-          </Typography>
-          <Button
-            variant="contained"
-            startIcon={<AddTaskIcon />}
-            component={Link}
-            to="/projects"
-          >
-            New Project
-          </Button>
+        {/* Project Progress section - full width */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2, height: 240 }}>
+            <Typography variant="h6" gutterBottom>
+              Project Progress
+            </Typography>
+            {/* Dashboard charts would go here */}
+            <Grid container spacing={2} sx={{ mt: 1 }}>
+              <Grid item xs={12} md={3}>
+                <StatsCard
+                  title="Total Projects"
+                  value={projectSummary.length}
+                  icon={<TaskIcon />}
+                  color="#e3f2fd"
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <StatsCard
+                  title="Tasks Completed"
+                  value={projectSummary.reduce(
+                    (sum, project) => sum + project.tasks.completed,
+                    0
+                  )}
+                  icon={<CompletedIcon />}
+                  color="#e8f5e9"
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <StatsCard
+                  title="Pending Tasks"
+                  value={projectSummary.reduce(
+                    (sum, project) =>
+                      sum + (project.tasks.total - project.tasks.completed),
+                    0
+                  )}
+                  icon={<TaskIcon />}
+                  color="#fff8e1"
+                />
+              </Grid>
+              <Grid item xs={12} md={3}>
+                <StatsCard
+                  title="Team Members"
+                  value="5"
+                  icon={<TeamIcon />}
+                  color="#f3e5f5"
+                />
+              </Grid>
+            </Grid>
+          </Paper>
         </Grid>
 
-        {/* Stats Row */}
-        <Grid item xs={12} md={3}>
-          <StatsCard
-            title="Total Projects"
-            value="4"
-            icon={<PieChartIcon color="primary" sx={{ fontSize: 40 }} />}
-            color="#bbdefb"
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <StatsCard
-            title="Open Tasks"
-            value="38"
-            icon={<PendingIcon sx={{ fontSize: 40, color: "#ff9800" }} />}
-            color="#fff3e0"
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <StatsCard
-            title="Completed Tasks"
-            value="51"
-            icon={<CompletedIcon sx={{ fontSize: 40, color: "#4caf50" }} />}
-            color="#e8f5e9"
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <StatsCard
-            title="Sprint Velocity"
-            value="86 pts"
-            icon={<VelocityIcon sx={{ fontSize: 40, color: "#9c27b0" }} />}
-            color="#f3e5f5"
-          />
-        </Grid>
-
-        {/* Main Content */}
-        <Grid item xs={12} md={8}>
-          <Paper sx={{ p: 3, height: "100%" }}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 2,
-              }}
-            >
-              <Typography variant="h6">Current Projects</Typography>
-              <Button
-                endIcon={<ArrowForwardIcon />}
-                size="small"
-                component={Link}
-                to="/projects"
-              >
-                View All
-              </Button>
-            </Box>
+        {/* Current Projects section */}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="h6" gutterBottom>
+              Current Projects
+            </Typography>
+            {/* Projects summary would go here */}
             <TableContainer>
               <Table>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Project Name</TableCell>
-                    <TableCell>Progress</TableCell>
-                    <TableCell>Tasks</TableCell>
-                    <TableCell>Deadline</TableCell>
-                    <TableCell>Team</TableCell>
-                    <TableCell align="right">Actions</TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: "0.95rem",
+                        borderBottom: "2px solid #1976d2",
+                        color: "primary.main",
+                        paddingBottom: "12px",
+                      }}
+                    >
+                      Project
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: "0.95rem",
+                        borderBottom: "2px solid #1976d2",
+                        color: "primary.main",
+                        paddingBottom: "12px",
+                      }}
+                    >
+                      Progress
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: "0.95rem",
+                        borderBottom: "2px solid #1976d2",
+                        color: "primary.main",
+                        paddingBottom: "12px",
+                      }}
+                    >
+                      Tasks
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: "0.95rem",
+                        borderBottom: "2px solid #1976d2",
+                        color: "primary.main",
+                        paddingBottom: "12px",
+                      }}
+                    >
+                      Deadline
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: "0.95rem",
+                        borderBottom: "2px solid #1976d2",
+                        color: "primary.main",
+                        paddingBottom: "12px",
+                      }}
+                    >
+                      Team
+                    </TableCell>
+                    <TableCell
+                      align="center"
+                      sx={{
+                        fontWeight: 700,
+                        fontSize: "0.95rem",
+                        borderBottom: "2px solid #1976d2",
+                        color: "primary.main",
+                        paddingBottom: "12px",
+                      }}
+                    >
+                      Actions
+                    </TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {projectSummary.map((project) => (
                     <TableRow key={project.id} hover>
-                      <TableCell>
-                        <Typography variant="subtitle2">
-                          {project.name}
-                        </Typography>
-                      </TableCell>
+                      <TableCell>{project.name}</TableCell>
                       <TableCell>
                         <Box
                           sx={{
@@ -304,58 +333,60 @@ const DashboardPage = () => {
                               sx={{
                                 height: 8,
                                 borderRadius: 5,
-                                bgcolor: "#e0e0e0",
+                                backgroundColor: "#e0e0e0",
                                 "& .MuiLinearProgress-bar": {
-                                  bgcolor:
-                                    project.progress < 30
+                                  backgroundColor:
+                                    project.progress < 40
                                       ? "#f44336"
-                                      : project.progress < 70
+                                      : project.progress < 75
                                       ? "#ff9800"
                                       : "#4caf50",
                                 },
                               }}
                             />
                           </Box>
-                          <Box sx={{ minWidth: 35 }}>
-                            <Typography variant="body2" color="text.secondary">
-                              {project.progress}%
-                            </Typography>
-                          </Box>
+                          <Typography variant="body2" color="text.secondary">
+                            {project.progress}%
+                          </Typography>
                         </Box>
                       </TableCell>
-                      <TableCell>
-                        {project.tasks.completed}/{project.tasks.total}
-                      </TableCell>
+                      <TableCell>{`${project.tasks.completed}/${project.tasks.total}`}</TableCell>
                       <TableCell>{project.deadline}</TableCell>
                       <TableCell>
-                        <AvatarGroup
-                          max={3}
-                          sx={{
-                            "& .MuiAvatar-root": {
-                              width: 28,
-                              height: 28,
-                              fontSize: "0.875rem",
-                            },
-                          }}
-                        >
+                        <AvatarGroup max={3}>
                           {project.team.map((member, index) => (
                             <Avatar
                               key={index}
-                              sx={{ bgcolor: "primary.main" }}
+                              sx={{
+                                width: 30,
+                                height: 30,
+                                fontSize: "0.8rem",
+                                bgcolor:
+                                  member === "AJ"
+                                    ? "#3f51b5"
+                                    : member === "TS"
+                                    ? "#f44336"
+                                    : member === "ML"
+                                    ? "#4caf50"
+                                    : member === "JC"
+                                    ? "#ff9800"
+                                    : "#9c27b0",
+                              }}
                             >
                               {member}
                             </Avatar>
                           ))}
                         </AvatarGroup>
                       </TableCell>
-                      <TableCell align="right">
-                        <Button
+                      <TableCell align="center">
+                        <Chip
+                          label="View Board"
+                          clickable
+                          color="primary"
                           size="small"
-                          component={Link}
-                          to={`/projects/${project.id}`}
-                        >
-                          View
-                        </Button>
+                          onClick={() => navigate(`/kanban/${project.id}`)}
+                          sx={{ fontWeight: 500 }}
+                        />
                       </TableCell>
                     </TableRow>
                   ))}
@@ -365,299 +396,126 @@ const DashboardPage = () => {
           </Paper>
         </Grid>
 
-        {/* Sidebar */}
-        <Grid item xs={12} md={4}>
-          <Grid container spacing={3}>
-            {/* Recent Activity */}
-            <Grid item xs={12}>
-              <Paper sx={{ p: 2, height: "100%" }}>
-                <Typography variant="h6" gutterBottom>
-                  Recent Activity
-                </Typography>
-                <List>
-                  {recentActivities.map((activity, index) => (
-                    <ListItem
-                      key={index}
-                      divider={index < recentActivities.length - 1}
-                      disablePadding
-                      sx={{ py: 1 }}
-                    >
-                      <ListItemAvatar>
-                        <Avatar
-                          sx={{
-                            bgcolor: "primary.main",
-                            width: 32,
-                            height: 32,
-                            fontSize: "0.875rem",
-                          }}
-                        >
-                          {activity.avatar}
-                        </Avatar>
-                      </ListItemAvatar>
-                      <Box>
-                        <Typography variant="body2">
-                          <Box component="span" fontWeight="medium">
-                            {activity.user}
-                          </Box>{" "}
-                          {activity.action}{" "}
-                          <Box component="span" fontWeight="medium">
-                            {activity.target}
-                          </Box>
-                        </Typography>
-                        <Stack direction="row" spacing={1} alignItems="center">
-                          <Typography variant="caption" color="text.secondary">
-                            {activity.time}
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            •
-                          </Typography>
-                          <Typography variant="caption" color="text.secondary">
-                            {activity.project}
-                          </Typography>
-                        </Stack>
-                      </Box>
-                    </ListItem>
-                  ))}
-                </List>
-              </Paper>
-            </Grid>
-
-            {/* Upcoming Deadlines */}
-            <Grid item xs={12}>
-              <Paper sx={{ p: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                  Upcoming Deadlines
-                </Typography>
-                <List>
-                  {upcomingDeadlines.map((deadline, index) => (
-                    <ListItem
-                      key={index}
-                      disablePadding
-                      divider={index < upcomingDeadlines.length - 1}
-                      sx={{ py: 1 }}
-                    >
-                      <ListItemButton>
-                        <Box sx={{ flex: 1 }}>
-                          <Typography variant="body2" fontWeight="medium">
-                            {deadline.task}
-                          </Typography>
-                          <Stack
-                            direction="row"
-                            spacing={1}
-                            alignItems="center"
-                          >
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              {deadline.project}
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              •
-                            </Typography>
-                            <Typography
-                              variant="caption"
-                              color="text.secondary"
-                            >
-                              Due: {deadline.dueDate}
-                            </Typography>
-                          </Stack>
-                        </Box>
-                        <Chip
-                          label={deadline.priority}
-                          size="small"
-                          sx={{
-                            bgcolor: priorityColors[deadline.priority].bg,
-                            color: priorityColors[deadline.priority].color,
-                            fontSize: "0.75rem",
-                            height: 24,
-                          }}
-                        />
-                      </ListItemButton>
-                    </ListItem>
-                  ))}
-                </List>
-              </Paper>
-            </Grid>
-          </Grid>
-        </Grid>
-
-        {/* Sprint Burndown */}
+        {/* Recent Activity moved to bottom row */}
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2 }}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 2,
-              }}
-            >
-              <Typography variant="h6">Sprint Burndown</Typography>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Chip
-                  icon={<BurndownIcon fontSize="small" />}
-                  label="Current Sprint"
-                  size="small"
-                  sx={{ mr: 1 }}
-                />
-                <IconButton size="small">
-                  <MoreIcon fontSize="small" />
-                </IconButton>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                height: 240,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-                position: "relative",
-              }}
-            >
-              <Typography
-                variant="caption"
-                color="text.secondary"
-                sx={{ mb: 2 }}
-              >
-                Sprint Progress: 15 days left
-              </Typography>
-              {/* This is a simplified placeholder for a chart */}
-              <Box
-                sx={{
-                  width: "100%",
-                  height: 180,
-                  bgcolor: "#f5f5f5",
-                  borderRadius: 1,
-                  display: "flex",
-                  alignItems: "flex-end",
-                  px: 2,
-                }}
-              >
-                {/* Ideal burndown line */}
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 60,
-                    left: 32,
-                    right: 32,
-                    height: 1,
-                    bgcolor: "#e0e0e0",
-                    borderStyle: "dashed",
-                    borderColor: "#9e9e9e",
-                    borderWidth: 1,
-                    transform: "rotate(-10deg)",
-                    transformOrigin: "left top",
-                  }}
-                />
-
-                {/* Actual progress bars */}
-                {[100, 95, 87, 80, 76, 68, 60, 55, 50, 48, 45, 42, 40, 38].map(
-                  (height, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        width: 15,
-                        height: `${height}%`,
-                        bgcolor:
-                          index % 2 === 0 ? "primary.main" : "primary.light",
-                        mx: 0.5,
-                        borderRadius: "2px 2px 0 0",
-                        transition: "height 0.3s ease",
-                      }}
+          <Paper sx={{ p: 2, height: 240, overflow: "auto" }}>
+            <Typography variant="h6" gutterBottom>
+              Recent Activity
+            </Typography>
+            {/* Activity feed would go here */}
+            <List>
+              {recentActivities.map((activity, index) => (
+                <React.Fragment key={index}>
+                  <ListItem alignItems="flex-start" sx={{ py: 1 }}>
+                    <ListItemAvatar>
+                      <Avatar
+                        sx={{
+                          bgcolor:
+                            activity.avatar === "AJ"
+                              ? "#3f51b5"
+                              : activity.avatar === "TS"
+                              ? "#f44336"
+                              : activity.avatar === "ML"
+                              ? "#4caf50"
+                              : activity.avatar === "JC"
+                              ? "#ff9800"
+                              : "#9c27b0",
+                        }}
+                      >
+                        {activity.avatar}
+                      </Avatar>
+                    </ListItemAvatar>
+                    <ListItemText
+                      primary={
+                        <Typography component="span" variant="body2">
+                          <Typography component="span" fontWeight="medium">
+                            {activity.user}
+                          </Typography>{" "}
+                          {activity.action}{" "}
+                          <Typography component="span" fontWeight="medium">
+                            {activity.target}
+                          </Typography>
+                          {activity.project && (
+                            <Typography component="span" color="text.secondary">
+                              {" "}
+                              in {activity.project}
+                            </Typography>
+                          )}
+                        </Typography>
+                      }
+                      secondary={
+                        <Typography variant="caption" color="text.secondary">
+                          {activity.time}
+                        </Typography>
+                      }
                     />
-                  )
-                )}
-              </Box>
-            </Box>
+                  </ListItem>
+                  {index < recentActivities.length - 1 && (
+                    <Divider variant="inset" component="li" />
+                  )}
+                </React.Fragment>
+              ))}
+            </List>
           </Paper>
         </Grid>
 
-        {/* Team Velocity */}
+        {/* Added Upcoming Deadlines section */}
         <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 2 }}>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                mb: 2,
-              }}
-            >
-              <Typography variant="h6">Team Velocity</Typography>
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Chip
-                  icon={<TimelineIcon fontSize="small" />}
-                  label="Last 6 Sprints"
-                  size="small"
-                  sx={{ mr: 1 }}
-                />
-                <IconButton size="small">
-                  <MoreIcon fontSize="small" />
-                </IconButton>
-              </Box>
-            </Box>
-            <Box
-              sx={{
-                height: 240,
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-                alignItems: "center",
-              }}
-            >
-              {/* This is a simplified placeholder for a chart */}
-              <Box
-                sx={{
-                  width: "100%",
-                  height: 180,
-                  bgcolor: "#f5f5f5",
-                  borderRadius: 1,
-                  display: "flex",
-                  alignItems: "flex-end",
-                  justifyContent: "space-around",
-                  px: 2,
-                }}
-              >
-                {[75, 82, 68, 90, 78, 86].map((height, index) => (
-                  <Box
-                    key={index}
-                    sx={{
-                      width: 40,
-                      height: `${height * 0.9}%`,
-                      bgcolor: "secondary.main",
-                      borderRadius: "4px 4px 0 0",
-                      position: "relative",
-                      "&::after": {
-                        content: '"Sprint ' + (index + 1) + '"',
-                        position: "absolute",
-                        bottom: -24,
-                        left: 0,
-                        right: 0,
-                        textAlign: "center",
-                        fontSize: "0.75rem",
-                        color: "text.secondary",
-                      },
-                      "&::before": {
-                        content: `"${height}"`,
-                        position: "absolute",
-                        top: -20,
-                        left: 0,
-                        right: 0,
-                        textAlign: "center",
-                        fontSize: "0.75rem",
-                        color: "text.primary",
-                        fontWeight: "medium",
-                      },
-                    }}
+          <Paper sx={{ p: 2, height: 240, overflow: "auto" }}>
+            <Typography variant="h6" gutterBottom>
+              Upcoming Deadlines
+            </Typography>
+            {/* Deadlines would go here */}
+            <List>
+              {upcomingDeadlines.map((deadline, index) => (
+                <ListItem key={index} sx={{ py: 1 }}>
+                  <ListItemText
+                    primary={
+                      <Stack
+                        direction="row"
+                        justifyContent="space-between"
+                        alignItems="center"
+                      >
+                        <Typography variant="body2" fontWeight="medium">
+                          {deadline.task}
+                        </Typography>
+                        <Chip
+                          size="small"
+                          label={deadline.priority}
+                          sx={{
+                            bgcolor: priorityColors[deadline.priority].bg,
+                            color: priorityColors[deadline.priority].color,
+                            fontWeight: 500,
+                            height: 24,
+                          }}
+                        />
+                      </Stack>
+                    }
+                    secondary={
+                      <Stack direction="row" spacing={1} mt={0.5}>
+                        <Typography variant="caption" color="text.secondary">
+                          {deadline.project}
+                        </Typography>
+                        <Typography variant="caption" color="text.secondary">
+                          •
+                        </Typography>
+                        <Typography
+                          variant="caption"
+                          sx={{
+                            color:
+                              new Date(deadline.dueDate) < new Date()
+                                ? "error.main"
+                                : "text.secondary",
+                          }}
+                        >
+                          Due: {deadline.dueDate}
+                        </Typography>
+                      </Stack>
+                    }
                   />
-                ))}
-              </Box>
-            </Box>
+                </ListItem>
+              ))}
+            </List>
           </Paper>
         </Grid>
       </Grid>

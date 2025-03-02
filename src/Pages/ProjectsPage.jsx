@@ -1,51 +1,72 @@
-// src/Pages/ProjectsPage.jsx
 import React from "react";
-import { Link } from "react-router-dom";
 import {
   Box,
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  LinearProgress,
   Typography,
+  Paper,
+  Button,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+  LinearProgress,
+  Chip,
+  Avatar,
+  AvatarGroup,
 } from "@mui/material";
 import { Add as AddIcon } from "@mui/icons-material";
-
-// Sample project data
-const projects = [
-  {
-    id: "dev-portal",
-    name: "Developer Portal",
-    description: "Central hub for API documentation and developer resources",
-    progress: 75,
-    team: ["Alex", "Jordan", "Taylor"],
-  },
-  {
-    id: "mobile-app",
-    name: "Mobile App Redesign",
-    description: "Refresh the UI/UX of our mobile application",
-    progress: 30,
-    team: ["Morgan", "Casey"],
-  },
-  {
-    id: "analytics",
-    name: "Analytics Dashboard",
-    description: "Real-time metrics and reporting dashboard",
-    progress: 60,
-    team: ["Taylor", "Casey", "Alex"],
-  },
-  {
-    id: "auth-service",
-    name: "Authentication Service",
-    description: "Unified authentication system for all platforms",
-    progress: 90,
-    team: ["Jordan", "Morgan"],
-  },
-];
+import { useNavigate } from "react-router-dom";
 
 const ProjectsPage = () => {
+  const navigate = useNavigate();
+
+  // Sample project data
+  const projects = [
+    {
+      id: "dev-portal",
+      name: "Developer Portal",
+      description:
+        "A centralized platform for API documentation and developer resources",
+      progress: 75,
+      tasks: { total: 24, completed: 18 },
+      deadline: "Mar 15, 2025",
+      team: ["AJ", "TS", "ML"],
+    },
+    {
+      id: "mobile-app",
+      name: "Mobile App Redesign",
+      description: "Complete UI/UX overhaul of the mobile application",
+      progress: 30,
+      tasks: { total: 32, completed: 9 },
+      deadline: "Apr 10, 2025",
+      team: ["JC", "CK", "ML"],
+    },
+    {
+      id: "analytics",
+      name: "Analytics Dashboard",
+      description: "Data visualization tools for business insights",
+      progress: 60,
+      tasks: { total: 18, completed: 11 },
+      deadline: "Mar 25, 2025",
+      team: ["TS", "JC", "AJ"],
+    },
+    {
+      id: "auth-service",
+      name: "Authentication Service",
+      description:
+        "Secure authentication system with JWT and OAuth integration",
+      progress: 90,
+      tasks: { total: 15, completed: 13 },
+      deadline: "Mar 5, 2025",
+      team: ["JC", "CK"],
+    },
+  ];
+
+  const getStatusColor = (progress) => {
+    if (progress < 40) return "#f44336"; // Red
+    if (progress < 75) return "#ff9800"; // Orange
+    return "#4caf50"; // Green
+  };
+
   return (
     <Box>
       <Box
@@ -59,75 +80,135 @@ const ProjectsPage = () => {
         <Typography variant="h4" component="h1">
           Projects
         </Typography>
-        <Button variant="contained" startIcon={<AddIcon />}>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => console.log("Create new project")}
+        >
           New Project
         </Button>
       </Box>
 
       <Grid container spacing={3}>
         {projects.map((project) => (
-          <Grid item xs={12} md={6} lg={4} key={project.id}>
-            <ProjectCard project={project} />
+          <Grid item xs={12} md={6} key={project.id}>
+            <Card
+              variant="outlined"
+              sx={{
+                transition: "transform 0.2s, box-shadow 0.2s",
+                "&:hover": {
+                  transform: "translateY(-4px)",
+                  boxShadow: 3,
+                },
+              }}
+            >
+              <CardContent>
+                <Typography variant="h5" component="h2" gutterBottom>
+                  {project.name}
+                </Typography>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ mb: 2 }}
+                >
+                  {project.description}
+                </Typography>
+
+                <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                  <Box sx={{ flexGrow: 1, mr: 1 }}>
+                    <LinearProgress
+                      variant="determinate"
+                      value={project.progress}
+                      sx={{
+                        height: 8,
+                        borderRadius: 5,
+                        backgroundColor: "#e0e0e0",
+                        "& .MuiLinearProgress-bar": {
+                          backgroundColor: getStatusColor(project.progress),
+                        },
+                      }}
+                    />
+                  </Box>
+                  <Typography variant="body2" color="text.secondary">
+                    {project.progress}%
+                  </Typography>
+                </Box>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    mb: 2,
+                  }}
+                >
+                  <Chip
+                    label={`Tasks: ${project.tasks.completed}/${project.tasks.total}`}
+                    size="small"
+                    sx={{ bgcolor: "background.default" }}
+                  />
+                  <Chip
+                    label={`Due: ${project.deadline}`}
+                    size="small"
+                    sx={{ bgcolor: "background.default" }}
+                  />
+                </Box>
+
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <Typography variant="body2" color="text.secondary">
+                    Team:
+                  </Typography>
+                  <AvatarGroup max={4}>
+                    {project.team.map((member, index) => (
+                      <Avatar
+                        key={index}
+                        sx={{
+                          width: 30,
+                          height: 30,
+                          fontSize: "0.8rem",
+                          bgcolor:
+                            member === "AJ"
+                              ? "#3f51b5"
+                              : member === "TS"
+                              ? "#f44336"
+                              : member === "ML"
+                              ? "#4caf50"
+                              : member === "JC"
+                              ? "#ff9800"
+                              : "#9c27b0",
+                        }}
+                      >
+                        {member}
+                      </Avatar>
+                    ))}
+                  </AvatarGroup>
+                </Box>
+              </CardContent>
+              <CardActions>
+                <Button
+                  size="small"
+                  onClick={() => navigate(`/projects/${project.id}`)}
+                >
+                  View Details
+                </Button>
+                <Button
+                  size="small"
+                  color="primary"
+                  onClick={() => navigate(`/kanban/${project.id}`)}
+                >
+                  Kanban Board
+                </Button>
+              </CardActions>
+            </Card>
           </Grid>
         ))}
       </Grid>
     </Box>
-  );
-};
-
-const ProjectCard = ({ project }) => {
-  return (
-    <Card sx={{ height: "100%" }}>
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          {project.name}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-          {project.description}
-        </Typography>
-
-        <Box sx={{ mb: 2 }}>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              mb: 1,
-            }}
-          >
-            <Typography variant="body2">Progress</Typography>
-            <Typography variant="body2" fontWeight="medium">
-              {project.progress}%
-            </Typography>
-          </Box>
-          <LinearProgress
-            variant="determinate"
-            value={project.progress}
-            sx={{ height: 8, borderRadius: 4 }}
-          />
-        </Box>
-
-        <Typography variant="body2" sx={{ mb: 0.5 }}>
-          Team Members:
-        </Typography>
-        <Typography variant="body2" color="text.secondary">
-          {project.team.join(", ")}
-        </Typography>
-      </CardContent>
-      <CardActions>
-        <Button
-          component={Link}
-          to={`/projects/${project.id}`}
-          size="small"
-          color="primary"
-        >
-          View Project
-        </Button>
-        <Button size="small" color="primary">
-          Edit
-        </Button>
-      </CardActions>
-    </Card>
   );
 };
 
