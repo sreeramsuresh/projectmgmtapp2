@@ -9,16 +9,25 @@ import {
   MenuItem,
   Paper,
 } from "@mui/material";
-import BoardColumns from "../Components/BoardColumns";
+import BoardColumns from "./BoardColumns";
 
-// This component can be accessed from sidebar or from dashboard "View Board" buttons
-const SimpleKanbanBoard = () => {
-  // Get projectId from URL if present
-  const { projectId } = useParams();
+/**
+ * SimpleKanbanBoard Component
+ *
+ * This component can be:
+ * 1. Accessed directly via the /kanban route
+ * 2. Accessed with a project ID via /kanban/:projectId route
+ * 3. Embedded in the ProjectDetailPage via props
+ */
+const SimpleKanbanBoard = ({ projectId: propProjectId }) => {
+  // Get projectId from URL params if present, otherwise use prop
+  const { projectId: paramProjectId } = useParams();
+  const effectiveProjectId = propProjectId || paramProjectId || "";
+
   const location = useLocation();
 
   // State for the currently selected project
-  const [selectedProject, setSelectedProject] = useState("");
+  const [selectedProject, setSelectedProject] = useState(effectiveProjectId);
 
   // Sample data - in a real app, you would fetch this from an API
   const projects = [
@@ -121,12 +130,12 @@ const SimpleKanbanBoard = () => {
     setSelectedProject(event.target.value);
   };
 
-  // Update selected project when projectId from URL changes
+  // Update selected project when effectiveProjectId changes
   useEffect(() => {
-    if (projectId) {
-      setSelectedProject(projectId);
+    if (effectiveProjectId) {
+      setSelectedProject(effectiveProjectId);
     }
-  }, [projectId]);
+  }, [effectiveProjectId]);
 
   // Filter tasks based on selected project
   const filteredTasks = selectedProject
@@ -150,34 +159,42 @@ const SimpleKanbanBoard = () => {
     // In a real app, you would open a dialog to create a new task
   };
 
+  // Determine if we should show the project selector
+  // Hide it when embedded in project detail page or when accessed via /kanban/:projectId
+  const showProjectSelector = !propProjectId;
+
   return (
     <Box>
-      <Typography variant="h4" gutterBottom>
-        Kanban Board
-      </Typography>
+      {!propProjectId && (
+        <Typography variant="h4" gutterBottom>
+          Kanban Board
+        </Typography>
+      )}
 
-      {/* Project selection dropdown */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <FormControl fullWidth>
-          <InputLabel id="project-select-label">Select Project</InputLabel>
-          <Select
-            labelId="project-select-label"
-            id="project-select"
-            value={selectedProject}
-            label="Select Project"
-            onChange={handleProjectChange}
-          >
-            <MenuItem value="">
-              <em>Select a project</em>
-            </MenuItem>
-            {projects.map((project) => (
-              <MenuItem key={project.id} value={project.id}>
-                {project.name}
+      {/* Project selection dropdown - only show when not embedded or not pre-selected */}
+      {showProjectSelector && (
+        <Paper sx={{ p: 2, mb: 3 }}>
+          <FormControl fullWidth>
+            <InputLabel id="project-select-label">Select Project</InputLabel>
+            <Select
+              labelId="project-select-label"
+              id="project-select"
+              value={selectedProject}
+              label="Select Project"
+              onChange={handleProjectChange}
+            >
+              <MenuItem value="">
+                <em>Select a project</em>
               </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Paper>
+              {projects.map((project) => (
+                <MenuItem key={project.id} value={project.id}>
+                  {project.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Paper>
+      )}
 
       {/* Display the kanban board only if a project is selected */}
       {selectedProject && filteredTasks.length > 0 ? (
@@ -190,7 +207,9 @@ const SimpleKanbanBoard = () => {
       ) : (
         <Paper sx={{ p: 4, textAlign: "center" }}>
           <Typography variant="h6" color="text.secondary">
-            Please select a project to view its Kanban board
+            {selectedProject
+              ? "No tasks found for this project"
+              : "Please select a project to view its Kanban board"}
           </Typography>
         </Paper>
       )}
