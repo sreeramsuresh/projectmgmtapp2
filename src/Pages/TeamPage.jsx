@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
@@ -13,16 +13,26 @@ import {
   Grid,
   Card,
   CardContent,
+  Button,
+  Tooltip,
+  IconButton,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
+  Add as AddIcon,
   Email as EmailIcon,
   Phone as PhoneIcon,
   Assignment as AssignmentIcon,
+  Delete as DeleteIcon,
+  Edit as EditIcon,
 } from "@mui/icons-material";
+import TeamMemberFormDialog from "./../Components/TeamMemberFormDialog";
+import ConfirmationDialog from "./../Components/ConfirmationDialog";
 
 const TeamPage = () => {
-  // Sample team data
-  const teamMembers = [
+  // State for the team members
+  const [teamMembers, setTeamMembers] = useState([
     {
       id: 1,
       name: "Alex Johnson",
@@ -78,13 +88,98 @@ const TeamPage = () => {
       avatar: "#9c27b0",
       assignedProjects: 2,
     },
-  ];
+  ]);
+
+  // State for dialogs visibility
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [deleteDialog, setDeleteDialog] = useState({
+    open: false,
+    memberId: null,
+    memberName: "",
+  });
+
+  // State for notifications
+  const [notification, setNotification] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  // Handle adding a new team member
+  const handleAddTeamMember = (newMember) => {
+    setTeamMembers([...teamMembers, newMember]);
+    setNotification({
+      open: true,
+      message: `${newMember.name} has been added to the team.`,
+      severity: "success",
+    });
+  };
+
+  // Open delete confirmation dialog
+  const openDeleteDialog = (memberId, memberName) => {
+    setDeleteDialog({
+      open: true,
+      memberId,
+      memberName,
+    });
+  };
+
+  // Close delete confirmation dialog
+  const closeDeleteDialog = () => {
+    setDeleteDialog({
+      open: false,
+      memberId: null,
+      memberName: "",
+    });
+  };
+
+  // Handle deleting a team member
+  const handleDeleteTeamMember = () => {
+    const { memberId, memberName } = deleteDialog;
+    setTeamMembers(teamMembers.filter((member) => member.id !== memberId));
+    closeDeleteDialog();
+    setNotification({
+      open: true,
+      message: `${memberName} has been removed from the team.`,
+      severity: "success",
+    });
+  };
+
+  // Close notification
+  const handleCloseNotification = () => {
+    setNotification({
+      ...notification,
+      open: false,
+    });
+  };
+
+  // Calculate total assigned projects
+  const totalAssignedProjects = teamMembers.reduce(
+    (total, member) => total + member.assignedProjects,
+    0
+  );
 
   return (
     <Box>
-      <Typography variant="h4" component="h1" gutterBottom>
-        Team Members
-      </Typography>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          mb: 3,
+        }}
+      >
+        <Typography variant="h4" component="h1">
+          Team Members
+        </Typography>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+          onClick={() => setIsAddDialogOpen(true)}
+        >
+          Add Team Member
+        </Button>
+      </Box>
 
       {/* Team Stats */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
@@ -108,10 +203,7 @@ const TeamPage = () => {
           <Card sx={{ height: "100%" }}>
             <CardContent>
               <Typography variant="h3" align="center">
-                {teamMembers.reduce(
-                  (total, member) => total + member.assignedProjects,
-                  0
-                )}
+                {totalAssignedProjects}
               </Typography>
               <Typography
                 variant="subtitle1"
@@ -160,15 +252,41 @@ const TeamPage = () => {
                 </ListItemAvatar>
                 <ListItemText
                   primary={
-                    <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-                      <Typography variant="h6" component="span">
-                        {member.name}
-                      </Typography>
-                      <Chip
-                        label={member.role}
-                        size="small"
-                        sx={{ ml: 2, bgcolor: "background.default" }}
-                      />
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        mb: 1,
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <Typography variant="h6" component="span">
+                          {member.name}
+                        </Typography>
+                        <Chip
+                          label={member.role}
+                          size="small"
+                          sx={{ ml: 2, bgcolor: "background.default" }}
+                        />
+                      </Box>
+                      <Box>
+                        <Tooltip title="Edit">
+                          <IconButton size="small">
+                            <EditIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                        <Tooltip title="Delete">
+                          <IconButton
+                            size="small"
+                            onClick={() =>
+                              openDeleteDialog(member.id, member.name)
+                            }
+                          >
+                            <DeleteIcon fontSize="small" />
+                          </IconButton>
+                        </Tooltip>
+                      </Box>
                     </Box>
                   }
                   secondary={
@@ -244,6 +362,38 @@ const TeamPage = () => {
           ))}
         </List>
       </Paper>
+
+      {/* Add Team Member Dialog */}
+      <TeamMemberFormDialog
+        open={isAddDialogOpen}
+        onClose={() => setIsAddDialogOpen(false)}
+        onAddTeamMember={handleAddTeamMember}
+      />
+
+      {/* Confirmation Dialog for Delete */}
+      <ConfirmationDialog
+        open={deleteDialog.open}
+        title="Confirm Delete"
+        message={`Are you sure you want to remove ${deleteDialog.memberName} from the team?`}
+        onClose={closeDeleteDialog}
+        onConfirm={handleDeleteTeamMember}
+      />
+
+      {/* Notification Snackbar */}
+      <Snackbar
+        open={notification.open}
+        autoHideDuration={6000}
+        onClose={handleCloseNotification}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={handleCloseNotification}
+          severity={notification.severity}
+          sx={{ width: "100%" }}
+        >
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
