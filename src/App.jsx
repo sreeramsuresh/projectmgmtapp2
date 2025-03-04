@@ -1,4 +1,4 @@
-// src/App.jsx - Main Application with Router Setup
+// src/App.jsx - Main Application with Router and NotificationProvider
 import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
@@ -10,6 +10,7 @@ import ProjectDetailPage from "./Pages/ProjectDetailPage";
 import SimpleKanbanBoard from "./Components/SimpleKanbanBoard";
 import TeamPage from "./Pages/TeamPage";
 import SettingsPage from "./Pages/SettingsPage";
+import { NotificationProvider } from "./contexts/NotificationContext";
 
 // Create a custom theme
 const theme = createTheme({
@@ -58,36 +59,38 @@ const App = () => {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          {/* Main application routes with layout */}
-          <Route path="/" element={<Layout />}>
-            {/* Redirect from root to dashboard */}
-            <Route index element={<Navigate to="/dashboard" replace />} />
+      <NotificationProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Main application routes with layout */}
+            <Route path="/" element={<Layout />}>
+              {/* Redirect from root to dashboard */}
+              <Route index element={<Navigate to="/dashboard" replace />} />
 
-            {/* Dashboard page */}
-            <Route path="dashboard" element={<DashboardPage />} />
+              {/* Dashboard page */}
+              <Route path="dashboard" element={<DashboardPage />} />
 
-            {/* Projects routes */}
-            <Route path="projects">
-              <Route index element={<ProjectsPage />} />
-              <Route path=":projectId" element={<ProjectDetailPage />} />
+              {/* Projects routes */}
+              <Route path="projects">
+                <Route index element={<ProjectsPage />} />
+                <Route path=":projectId" element={<ProjectDetailPage />} />
+              </Route>
+
+              {/* Kanban Board routes */}
+              <Route path="kanban">
+                <Route index element={<SimpleKanbanBoard />} />
+                <Route path=":projectId" element={<SimpleKanbanBoard />} />
+              </Route>
+
+              {/* Team page */}
+              <Route path="team" element={<TeamPage />} />
+
+              {/* Settings page */}
+              <Route path="settings" element={<SettingsPage />} />
             </Route>
-
-            {/* Kanban Board routes */}
-            <Route path="kanban">
-              <Route index element={<SimpleKanbanBoard />} />
-              <Route path=":projectId" element={<SimpleKanbanBoard />} />
-            </Route>
-
-            {/* Team page */}
-            <Route path="team" element={<TeamPage />} />
-
-            {/* Settings page */}
-            <Route path="settings" element={<SettingsPage />} />
-          </Route>
-        </Routes>
-      </BrowserRouter>
+          </Routes>
+        </BrowserRouter>
+      </NotificationProvider>
     </ThemeProvider>
   );
 };

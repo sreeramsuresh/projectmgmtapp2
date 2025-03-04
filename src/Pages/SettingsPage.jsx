@@ -1,3 +1,4 @@
+// src/Pages/SettingsPage.jsx - Updated version with notification settings
 import React, { useState } from "react";
 import {
   Box,
@@ -8,11 +9,8 @@ import {
   ListItemText,
   ListItemIcon,
   Divider,
-  Switch,
   TextField,
   Button,
-  FormControlLabel,
-  FormGroup,
   Grid,
   MenuItem,
   Select,
@@ -27,18 +25,13 @@ import {
   Security as SecurityIcon,
   Palette as PaletteIcon,
   Language as LanguageIcon,
-  Email as EmailIcon,
 } from "@mui/icons-material";
+import { useNotification } from "../contexts/NotificationContext";
+import NotificationSettings from "../components/Notifications/NotificationSettings";
+import NotificationDemo from "../components/Notifications/NotificationDemo";
 
 const SettingsPage = () => {
   const [activeSection, setActiveSection] = useState("account");
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: true,
-    taskAssigned: true,
-    taskCompleted: false,
-    projectUpdates: true,
-  });
   const [theme, setTheme] = useState("light");
   const [language, setLanguage] = useState("en");
   const [snackbar, setSnackbar] = useState({
@@ -46,13 +39,6 @@ const SettingsPage = () => {
     message: "",
     severity: "success",
   });
-
-  const handleNotificationChange = (event) => {
-    setNotifications({
-      ...notifications,
-      [event.target.name]: event.target.checked,
-    });
-  };
 
   const handleSave = () => {
     setSnackbar({
@@ -159,89 +145,13 @@ const SettingsPage = () => {
             {/* Notification Settings */}
             {activeSection === "notifications" && (
               <Box>
-                <Typography variant="h6" gutterBottom>
-                  Notification Settings
-                </Typography>
-                <Typography
-                  variant="subtitle2"
-                  color="text.secondary"
-                  gutterBottom
-                >
-                  Configure how and when you receive notifications
-                </Typography>
-
-                <Box sx={{ mt: 3 }}>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Notification Channels
+                <NotificationSettings />
+                <Box sx={{ mt: 4 }}>
+                  <Divider sx={{ mb: 3 }} />
+                  <Typography variant="h6" gutterBottom>
+                    Testing
                   </Typography>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={notifications.email}
-                          onChange={handleNotificationChange}
-                          name="email"
-                        />
-                      }
-                      label="Email Notifications"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={notifications.push}
-                          onChange={handleNotificationChange}
-                          name="push"
-                        />
-                      }
-                      label="Push Notifications"
-                    />
-                  </FormGroup>
-                </Box>
-
-                <Divider sx={{ my: 3 }} />
-
-                <Box>
-                  <Typography variant="subtitle1" gutterBottom>
-                    Notification Events
-                  </Typography>
-                  <FormGroup>
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={notifications.taskAssigned}
-                          onChange={handleNotificationChange}
-                          name="taskAssigned"
-                        />
-                      }
-                      label="Task Assigned"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={notifications.taskCompleted}
-                          onChange={handleNotificationChange}
-                          name="taskCompleted"
-                        />
-                      }
-                      label="Task Completed"
-                    />
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={notifications.projectUpdates}
-                          onChange={handleNotificationChange}
-                          name="projectUpdates"
-                        />
-                      }
-                      label="Project Updates"
-                    />
-                  </FormGroup>
-                </Box>
-
-                <Box sx={{ mt: 2 }}>
-                  <Button variant="contained" onClick={handleSave}>
-                    Save Changes
-                  </Button>
+                  <NotificationDemo />
                 </Box>
               </Box>
             )}
@@ -275,13 +185,6 @@ const SettingsPage = () => {
                     type="password"
                     margin="normal"
                   />
-
-                  <Box sx={{ mt: 1, mb: 3 }}>
-                    <FormControlLabel
-                      control={<Switch defaultChecked />}
-                      label="Two-factor authentication"
-                    />
-                  </Box>
 
                   <Box sx={{ mt: 2 }}>
                     <Button variant="contained" onClick={handleSave}>

@@ -1,10 +1,10 @@
+// src/Router/Layout.jsx - Updated version with NotificationBell
 import React, { useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Avatar,
   Box,
-  Button,
   Drawer,
   IconButton,
   List,
@@ -24,12 +24,12 @@ import {
   ViewKanban as KanbanIcon,
   People as TeamIcon,
   Settings as SettingsIcon,
-  Notifications as NotificationsIcon,
   Search as SearchIcon,
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
+import NotificationBell from "../components/Notifications/NotificationBell";
 
 // Constants
 const drawerWidth = 240;
@@ -149,12 +149,8 @@ const Layout = () => {
             </IconButton>
           </Tooltip>
 
-          {/* Notifications */}
-          <Tooltip title="Notifications">
-            <IconButton color="inherit">
-              <NotificationsIcon />
-            </IconButton>
-          </Tooltip>
+          {/* Notification Bell */}
+          <NotificationBell />
 
           {/* User menu */}
           <Tooltip title="Account settings">
@@ -183,7 +179,9 @@ const Layout = () => {
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
             <MenuItem>My Profile</MenuItem>
-            <MenuItem>Account Settings</MenuItem>
+            <MenuItem onClick={() => navigate("/settings")}>
+              Account Settings
+            </MenuItem>
             <MenuItem>Logout</MenuItem>
           </Menu>
         </Toolbar>
