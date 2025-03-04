@@ -1,10 +1,13 @@
-// src/Router/Layout.jsx - Updated version with NotificationBell
-import React, { useState } from "react";
+// src/Router/Layout.jsx - Updated with Auth Support
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import {
   AppBar,
   Avatar,
   Box,
+  Button,
+  Divider,
   Drawer,
   IconButton,
   List,
@@ -24,12 +27,15 @@ import {
   ViewKanban as KanbanIcon,
   People as TeamIcon,
   Settings as SettingsIcon,
+  Notifications as NotificationsIcon,
   Search as SearchIcon,
   Menu as MenuIcon,
   ChevronLeft as ChevronLeftIcon,
+  Logout as LogoutIcon,
+  Person as PersonIcon,
 } from "@mui/icons-material";
 import { styled } from "@mui/material/styles";
-import NotificationBell from "../components/Notifications/NotificationBell";
+import { logout } from "../redux/slices/authSlice";
 
 // Constants
 const drawerWidth = 240;
@@ -81,18 +87,12 @@ const StyledDrawer = styled(Drawer, {
   },
 }));
 
-// Navigation items
-const navItems = [
-  { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
-  { text: "Projects", icon: <ProjectsIcon />, path: "/projects" },
-  { text: "Simple Kanban", icon: <KanbanIcon />, path: "/kanban" },
-  { text: "Team", icon: <TeamIcon />, path: "/team" },
-  { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
-];
-
 const Layout = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
   const [open, setOpen] = useState(true);
   const [anchorEl, setAnchorEl] = useState(null);
 
@@ -110,10 +110,43 @@ const Layout = () => {
     setAnchorEl(null);
   };
 
+  // Handle logout
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
+  };
+
   // Handle navigation
   const handleNavigation = (path) => {
     navigate(path);
   };
+
+  // Define navigation items based on user role
+  const getNavItems = () => {
+    // Base navigation items available to all authenticated users
+    const items = [
+      { text: "Dashboard", icon: <DashboardIcon />, path: "/dashboard" },
+      { text: "Projects", icon: <ProjectsIcon />, path: "/projects" },
+      { text: "Kanban Board", icon: <KanbanIcon />, path: "/kanban" },
+    ];
+
+    // Add items based on role
+    if (user && (user.role === "admin" || user.role === "manager")) {
+      items.push({ text: "Team", icon: <TeamIcon />, path: "/team" });
+    }
+
+    if (user && user.role === "admin") {
+      items.push({
+        text: "Settings",
+        icon: <SettingsIcon />,
+        path: "/settings",
+      });
+    }
+
+    return items;
+  };
+
+  const navItems = getNavItems();
 
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
@@ -149,8 +182,12 @@ const Layout = () => {
             </IconButton>
           </Tooltip>
 
-          {/* Notification Bell */}
-          <NotificationBell />
+          {/* Notifications */}
+          <Tooltip title="Notifications">
+            <IconButton color="inherit">
+              <NotificationsIcon />
+            </IconButton>
+          </Tooltip>
 
           {/* User menu */}
           <Tooltip title="Account settings">
@@ -164,7 +201,7 @@ const Layout = () => {
               color="inherit"
             >
               <Avatar sx={{ width: 32, height: 32, bgcolor: "primary.dark" }}>
-                US
+                {user?.name.charAt(0) || "U"}
               </Avatar>
             </IconButton>
           </Tooltip>
@@ -178,11 +215,35 @@ const Layout = () => {
             transformOrigin={{ horizontal: "right", vertical: "top" }}
             anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
           >
-            <MenuItem>My Profile</MenuItem>
-            <MenuItem onClick={() => navigate("/settings")}>
-              Account Settings
+            <MenuItem sx={{ minWidth: 180 }}>
+              <Box
+                sx={{ display: "flex", flexDirection: "column", width: "100%" }}
+              >
+                <Typography variant="subtitle2">{user?.name}</Typography>
+                <Typography variant="caption" color="text.secondary">
+                  {user?.email}
+                </Typography>
+                <Typography
+                  variant="caption"
+                  sx={{ mt: 0.5, textTransform: "capitalize" }}
+                >
+                  Role: {user?.role}
+                </Typography>
+              </Box>
             </MenuItem>
-            <MenuItem>Logout</MenuItem>
+            <Divider />
+            <MenuItem onClick={() => navigate("/profile")}>
+              <ListItemIcon>
+                <PersonIcon fontSize="small" />
+              </ListItemIcon>
+              My Profile
+            </MenuItem>
+            <MenuItem onClick={handleLogout}>
+              <ListItemIcon>
+                <LogoutIcon fontSize="small" />
+              </ListItemIcon>
+              Logout
+            </MenuItem>
           </Menu>
         </Toolbar>
       </StyledAppBar>
