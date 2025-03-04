@@ -30,6 +30,7 @@ import {
   Schedule as DeadlineIcon,
   Group as TeamIcon,
 } from "@mui/icons-material";
+import PieChart from "../Components/PieChart";
 
 // Dummy data
 const projectSummary = [
@@ -144,6 +145,23 @@ const priorityColors = {
   Low: { bg: "#e8f5e9", color: "#2e7d32" },
 };
 
+// Data for Task Status Chart
+const taskStatusData = [
+  { name: "Completed", value: 51, color: "#4caf50" },
+  { name: "In Progress", value: 23, color: "#2196f3" },
+  { name: "Review", value: 12, color: "#ff9800" },
+  { name: "Backlog", value: 33, color: "#9e9e9e" },
+];
+
+// Data for Team Workload Chart
+const teamWorkloadData = [
+  { name: "Alex J.", value: 15, color: "#3f51b5" },
+  { name: "Taylor S.", value: 18, color: "#f44336" },
+  { name: "Morgan L.", value: 12, color: "#4caf50" },
+  { name: "Jordan C.", value: 11, color: "#ff9800" },
+  { name: "Casey K.", value: 9, color: "#9c27b0" },
+];
+
 // Stats Card Component
 const StatsCard = ({ title, value, icon, color }) => {
   return (
@@ -177,6 +195,20 @@ const StatsCard = ({ title, value, icon, color }) => {
 
 const DashboardPage = () => {
   const navigate = useNavigate();
+
+  // Calculate summary data
+  const totalTasks = projectSummary.reduce(
+    (sum, project) => sum + project.tasks.total,
+    0
+  );
+
+  const completedTasks = projectSummary.reduce(
+    (sum, project) => sum + project.tasks.completed,
+    0
+  );
+
+  const pendingTasks = totalTasks - completedTasks;
+
   return (
     <Box>
       <Typography variant="h4" component="h1" gutterBottom>
@@ -202,10 +234,7 @@ const DashboardPage = () => {
               <Grid item xs={12} md={3}>
                 <StatsCard
                   title="Tasks Completed"
-                  value={projectSummary.reduce(
-                    (sum, project) => sum + project.tasks.completed,
-                    0
-                  )}
+                  value={completedTasks}
                   icon={<CompletedIcon />}
                   color="#e8f5e9"
                 />
@@ -213,11 +242,7 @@ const DashboardPage = () => {
               <Grid item xs={12} md={3}>
                 <StatsCard
                   title="Pending Tasks"
-                  value={projectSummary.reduce(
-                    (sum, project) =>
-                      sum + (project.tasks.total - project.tasks.completed),
-                    0
-                  )}
+                  value={pendingTasks}
                   icon={<TaskIcon />}
                   color="#fff8e1"
                 />
@@ -231,6 +256,29 @@ const DashboardPage = () => {
                 />
               </Grid>
             </Grid>
+          </Paper>
+        </Grid>
+
+        {/* Charts row */}
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2, height: 380 }}>
+            <PieChart
+              data={taskStatusData}
+              title="Task Status Distribution"
+              width={500}
+              height={330}
+            />
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2, height: 380 }}>
+            <PieChart
+              data={teamWorkloadData}
+              title="Team Workload Distribution"
+              width={500}
+              height={330}
+            />
           </Paper>
         </Grid>
 
